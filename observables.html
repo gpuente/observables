@@ -1,0 +1,53 @@
+<script>
+    // num var represents a data in the flow stream
+    var num = 0;
+
+
+
+    // The class observable represents an observable object
+    var observable = function(){
+        this.observers = [];  //the list of subscriptors to the data
+        this.data = [];  //the data stored
+
+
+        // Allow to an object subscribe to data changes in the observable
+        this.subscribe = function(subscriptor){
+            subscriptor.listen = function(data){
+                subscriptor.data = data;
+            }
+            this.observers.push(subscriptor);
+        }
+
+        // Simulate a change of the data. This could be a call to a webservice
+        this.getData = function(){
+            this.data.push('register num ' + num);
+            num++;
+            this.report(this.data);
+        }
+
+        // Allow report to all subscritors when the data change
+        this.report = function(data){
+            for(var i = 0; i < this.observers.length; i++){
+                this.observers[i].listen(data);
+            }
+        }
+    }
+
+
+// Start program
+
+    var obj = new observable(); //new object observable
+    var subscriptor = {'name' : 'subscriptor num. 1'}; //new object subscriptor
+    var subscriptor2 = {'name' : 'subscriptor num. 2'}; //new object subscriptor
+    obj.subscribe(subscriptor); //register the subscriptro in the object observable to get information when the data changes
+    obj.subscribe(subscriptor2); //register the subscriptro in the object observable to get information when the data changes
+    obj.getData(); // Simulate get data
+    obj.getData();
+    obj.getData();
+    obj.getData();
+    obj.getData();
+    console.log(subscriptor.name); // Print the results of the data in both subscriptors
+    console.log(subscriptor.data);
+    console.log(subscriptor2.name);
+    console.log(subscriptor2.data);
+</script>
